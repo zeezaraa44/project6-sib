@@ -1,14 +1,18 @@
 import os
 import json
 import psycopg2
+import hdfs
+from hdfs import InsecureClient
 
 from sqlalchemy import create_engine
+
 
 def config(connection_db):
     path = os.getcwd()
     with open(path+'/'+'config.json') as file:
-        conf =json.load(file)[connection_db]
+        conf = json.load(file)[connection_db]
     return conf
+
 
 def psql_conn(conf, name_conn):
     try:
@@ -25,3 +29,13 @@ def psql_conn(conf, name_conn):
     except Exception as e:
         print(f"[INFO] Can't connect PostgreSQL {name_conn}")
         print(str(e))
+
+
+def hadoop_conn(conf):
+    client = conf['client']
+    try:
+        conn = InsecureClient(client)
+        print(f"[INGFO]SUCCESS CONNECT TO HADOOP!")
+        return conn
+    except:
+        print(f"[INFO] CAN'T CONNECT TO HADOOP!!")
